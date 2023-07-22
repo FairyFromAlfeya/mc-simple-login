@@ -6,16 +6,18 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.ResourceLocation;
-import top.seraphjack.simplelogin.server.SLRegistries;
-import top.seraphjack.simplelogin.server.handler.PlayerLoginHandler;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+
+import top.seraphjack.simplelogin.server.SLRegistries;
+import top.seraphjack.simplelogin.server.handler.PlayerLoginHandler;
 
 public final class ArgumentTypeHandlerPlugin implements ArgumentType<HandlerPluginInput> {
     /**
@@ -53,9 +55,13 @@ public final class ArgumentTypeHandlerPlugin implements ArgumentType<HandlerPlug
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+    public <S> CompletableFuture<Suggestions> listSuggestions(
+        CommandContext<S> context,
+        SuggestionsBuilder builder
+    ) {
         if (context.getSource() instanceof CommandSourceStack) {
             Set<ResourceLocation> plugins = new HashSet<>();
+
             if (type == 0) {
                 plugins.addAll(PlayerLoginHandler.instance().listPlugins());
             } else if (type == 1) {
@@ -64,10 +70,15 @@ public final class ArgumentTypeHandlerPlugin implements ArgumentType<HandlerPlug
             } else if (type == 2) {
                 plugins.addAll(SLRegistries.PLUGINS.list());
             }
-            return SharedSuggestionProvider.suggest(plugins.stream().map(ResourceLocation::toString), builder);
+
+            return SharedSuggestionProvider.suggest(
+                plugins.stream().map(ResourceLocation::toString),
+                builder
+            );
         } else if (context.getSource() instanceof ClientSuggestionProvider src) {
             return src.customSuggestion(context);
         }
+
         return Suggestions.empty();
     }
 }

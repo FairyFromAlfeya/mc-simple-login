@@ -2,13 +2,14 @@ package top.seraphjack.simplelogin.client;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import top.seraphjack.simplelogin.SimpleLogin;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+
+import top.seraphjack.simplelogin.SimpleLogin;
 
 @OnlyIn(Dist.CLIENT)
 public final class PasswordHolder {
@@ -18,6 +19,7 @@ public final class PasswordHolder {
         if (INSTANCE == null) {
             INSTANCE = new PasswordHolder();
         }
+
         return INSTANCE;
     }
 
@@ -44,44 +46,71 @@ public final class PasswordHolder {
 
     private void save() {
         try {
-            Files.writeString(PASSWORD_FILE_PATH, password, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.writeString(
+                PASSWORD_FILE_PATH,
+                password,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING
+            );
         } catch (IOException e) {
             SimpleLogin.logger.error("Failed to save password", e);
         }
     }
 
-    public boolean initialized() {
+    public boolean isInitialized() {
         return initialized;
     }
 
     public void initialize(String password) {
-        if (initialized) throw new IllegalStateException();
+        if (initialized) {
+            throw new IllegalStateException();
+        }
+
         initialized = true;
         this.password = password;
+
         save();
     }
 
     public void setPendingPassword(String o) {
-        if (!initialized) throw new IllegalStateException();
+        if (!initialized) {
+            throw new IllegalStateException();
+        }
+
         this.pendingPassword = o;
+
         save();
     }
 
     public void applyPending() {
-        if (!initialized) throw new IllegalStateException();
-        if (this.pendingPassword == null) return;
+        if (!initialized) {
+            throw new IllegalStateException();
+        }
+
+        if (this.pendingPassword == null) {
+            return;
+        }
+
         this.password = pendingPassword;
+
         save();
+
         this.pendingPassword = null;
     }
 
     public void dropPending() {
-        if (!initialized) throw new IllegalStateException();
+        if (!initialized) {
+            throw new IllegalStateException();
+        }
+
         this.pendingPassword = null;
     }
 
     public String password() {
-        if (!initialized) throw new IllegalStateException();
+        if (!initialized) {
+            throw new IllegalStateException();
+        }
+
         return password;
     }
 }

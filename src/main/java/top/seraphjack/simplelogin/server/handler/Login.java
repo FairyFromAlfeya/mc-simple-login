@@ -22,10 +22,23 @@ public final class Login {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         Login login = (Login) o;
-        return time == login.time && Double.compare(login.posX, posX) == 0 && Double.compare(login.posY, posY) == 0 && Double.compare(login.posZ, posZ) == 0 && Float.compare(login.rotX, rotX) == 0 && Float.compare(login.rotY, rotY) == 0 && name.equals(login.name);
+
+        return time == login.time &&
+            Double.compare(login.posX, posX) == 0 &&
+            Double.compare(login.posY, posY) == 0 &&
+            Double.compare(login.posZ, posZ) == 0 &&
+            Float.compare(login.rotX, rotX) == 0 &&
+            Float.compare(login.rotY, rotY) == 0 &&
+            name.equals(login.name);
     }
 
     @Override

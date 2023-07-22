@@ -2,12 +2,10 @@ package top.seraphjack.simplelogin.server.storage;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
+
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.mindrot.jbcrypt.BCrypt;
-import top.seraphjack.simplelogin.SLConfig;
-import top.seraphjack.simplelogin.SimpleLogin;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.io.IOException;
@@ -19,6 +17,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.mindrot.jbcrypt.BCrypt;
+
+import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SimpleLogin;
 
 @ThreadSafe
 @OnlyIn(Dist.DEDICATED_SERVER)
@@ -32,14 +35,22 @@ public class StorageProviderFile implements StorageProvider {
         this.path = path;
 
         if (Files.exists(path)) {
-            POJOUserEntry[] buf = gson.fromJson(Files.newBufferedReader(path, StandardCharsets.UTF_8), POJOUserEntry[].class);
+            POJOUserEntry[] buf = gson.fromJson(
+                Files.newBufferedReader(path, StandardCharsets.UTF_8),
+                POJOUserEntry[].class
+            );
+
             if (buf != null) {
-                Arrays.stream(buf).peek(e -> e.username = e.username.toLowerCase()).forEach(e -> entries.put(e.username, e));
+                Arrays
+                    .stream(buf)
+                    .peek(e -> e.username = e.username.toLowerCase())
+                    .forEach(e -> entries.put(e.username, e));
             }
         } else {
             if (!Files.exists(path.getParent())) {
                 Files.createDirectories(path.getParent());
             }
+
             Files.createFile(path);
         }
     }
@@ -49,12 +60,14 @@ public class StorageProviderFile implements StorageProvider {
         if (entries.containsKey(username)) {
             return BCrypt.checkpw(password, entries.get(username).password);
         }
+
         return false;
     }
 
     @Override
     public void unregister(String username) {
         dirty = true;
+
         entries.remove(username);
     }
 
@@ -74,10 +87,16 @@ public class StorageProviderFile implements StorageProvider {
     @Override
     public synchronized void save() throws IOException {
         try {
-            Files.writeString(path, gson.toJson(entries.values().toArray()), StandardOpenOption.TRUNCATE_EXISTING);
+            Files.writeString(
+                path,
+                gson.toJson(entries.values().toArray()),
+                StandardOpenOption.TRUNCATE_EXISTING
+            );
+
             dirty = false;
         } catch (IOException ex) {
             SimpleLogin.logger.error("Unable to save entries", ex);
+
             throw ex;
         }
     }
@@ -115,9 +134,11 @@ public class StorageProviderFile implements StorageProvider {
 
     private static POJOUserEntry newEntry(String username, String password) {
         POJOUserEntry entry = new POJOUserEntry();
+
         entry.username = username;
         entry.password = password;
         entry.gameType = SLConfig.SERVER.defaultGameType.get();
+
         return entry;
     }
 

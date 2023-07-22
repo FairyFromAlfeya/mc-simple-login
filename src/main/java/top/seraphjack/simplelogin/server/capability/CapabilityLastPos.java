@@ -8,10 +8,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import top.seraphjack.simplelogin.server.storage.Position;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import top.seraphjack.simplelogin.server.storage.Position;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
 public class CapabilityLastPos {
@@ -24,8 +25,10 @@ public class CapabilityLastPos {
         @SuppressWarnings("unchecked")
         @Nonnull
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-            if (capability == CapabilityLoader.CAPABILITY_LAST_POS)
+            if (capability == CapabilityLoader.CAPABILITY_LAST_POS) {
                 return (LazyOptional<T>) LazyOptional.of(() -> lastPos);
+            }
+
             return LazyOptional.empty();
         }
 

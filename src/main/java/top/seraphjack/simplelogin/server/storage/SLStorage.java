@@ -3,6 +3,7 @@ package top.seraphjack.simplelogin.server.storage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import top.seraphjack.simplelogin.server.SLRegistries;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
@@ -21,8 +22,9 @@ public class SLStorage {
     }
 
     private SLStorage(String provider) {
-        storageProvider = SLRegistries.STORAGE_PROVIDERS.get(new ResourceLocation(provider))
-                .orElseThrow(() -> new RuntimeException("Storage provider not found: " + provider))
-                .get();
+        storageProvider = SLRegistries.STORAGE_PROVIDERS
+            .get(new ResourceLocation(provider))
+            .orElseThrow(() -> new RuntimeException("Storage provider not found: " + provider))
+            .get();
     }
 }

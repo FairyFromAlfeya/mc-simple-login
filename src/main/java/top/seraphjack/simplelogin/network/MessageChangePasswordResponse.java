@@ -2,21 +2,12 @@ package top.seraphjack.simplelogin.network;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-import top.seraphjack.simplelogin.client.PasswordHolder;
 
 import java.util.function.Supplier;
 
-public class MessageChangePasswordResponse {
-    private final boolean success;
+import top.seraphjack.simplelogin.client.PasswordHolder;
 
-    public boolean success() {
-        return success;
-    }
-
-    public MessageChangePasswordResponse(boolean success) {
-        this.success = success;
-    }
-
+public record MessageChangePasswordResponse(boolean success) {
     public static void encode(MessageChangePasswordResponse msg, FriendlyByteBuf buf) {
         buf.writeBoolean(msg.success);
     }
@@ -31,6 +22,7 @@ public class MessageChangePasswordResponse {
         } else {
             PasswordHolder.instance().dropPending();
         }
+
         ctx.get().setPacketHandled(true);
     }
 }

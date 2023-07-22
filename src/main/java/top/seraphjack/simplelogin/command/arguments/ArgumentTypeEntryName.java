@@ -7,22 +7,22 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.forgespi.Environment;
-import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import java.util.concurrent.CompletableFuture;
 
+import top.seraphjack.simplelogin.server.storage.SLStorage;
+
 public final class ArgumentTypeEntryName implements ArgumentType<EntryNameInput> {
+    private static final DynamicCommandExceptionType ENTRY_NOT_EXIST = new DynamicCommandExceptionType((o) -> Component.translatable("simplelogin.command.error.entry_not_found"));
 
-    private static final DynamicCommandExceptionType ENTRY_NOT_EXIST = new DynamicCommandExceptionType((o -> Component.translatable("simplelogin.command.error.entry_not_found")));
-
-    private ArgumentTypeEntryName() {
-    }
+    private ArgumentTypeEntryName() {}
 
     public static ArgumentTypeEntryName entryName() {
         return new ArgumentTypeEntryName();
@@ -32,19 +32,30 @@ public final class ArgumentTypeEntryName implements ArgumentType<EntryNameInput>
     public EntryNameInput parse(StringReader reader) throws CommandSyntaxException {
         String name = reader.readString();
 
-        if (Environment.get().getDist() == Dist.DEDICATED_SERVER && !SLStorage.instance().storageProvider.registered(name)) {
+        if (
+            Environment.get().getDist() == Dist.DEDICATED_SERVER &&
+            !SLStorage.instance().storageProvider.registered(name)
+        ) {
             throw ENTRY_NOT_EXIST.create(name);
         }
+
         return EntryNameInput.of(name);
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+    public <S> CompletableFuture<Suggestions> listSuggestions(
+        CommandContext<S> context,
+        SuggestionsBuilder builder
+    ) {
         if (context.getSource() instanceof CommandSourceStack) {
-            return SharedSuggestionProvider.suggest(SLStorage.instance().storageProvider.getAllRegisteredUsername(), builder);
+            return SharedSuggestionProvider.suggest(
+                SLStorage.instance().storageProvider.getAllRegisteredUsername(),
+                builder
+            );
         } else if (context.getSource() instanceof ClientSuggestionProvider src) {
             return src.customSuggestion(context);
         }
+
         return Suggestions.empty();
     }
 

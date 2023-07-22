@@ -11,5 +11,6 @@
   "simplelogin.command.plugin.list_member": " - %s",
   "simplelogin.info.password_change_successful": "Password changed successfully.",
   "simplelogin.info.password_change_fail": "Password change failed.",
-  "simplelogin.password.title": "SimpleLogin Password Setting"
+  "simplelogin.password.title": "SimpleLogin Password Setting",
+  "simplelogin.password": "Your password"
 }
