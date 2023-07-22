@@ -57,8 +57,8 @@ public final class PasswordHolder {
         }
     }
 
-    public boolean isInitialized() {
-        return initialized;
+    public boolean isUninitialized() {
+        return !initialized;
     }
 
     public void initialize(String password) {

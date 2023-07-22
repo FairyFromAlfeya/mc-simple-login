@@ -14,7 +14,7 @@ public final class EventHandler {
     public static void onGuiOpen(ScreenEvent.Opening event) {
         if (
             !(event.getScreen() instanceof SetPasswordScreen) &&
-                    PasswordHolder.instance().isInitialized()
+            PasswordHolder.instance().isUninitialized()
         ) {
             Screen prev = event.getScreen();
 

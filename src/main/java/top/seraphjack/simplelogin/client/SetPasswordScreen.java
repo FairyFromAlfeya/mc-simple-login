@@ -112,7 +112,7 @@ public final class SetPasswordScreen extends Screen {
 
     @Override
     public void onClose() {
-        if (PasswordHolder.instance().isInitialized()) {
+        if (PasswordHolder.instance().isUninitialized()) {
             if (!this.password.getValue().isEmpty()) {
                 PasswordHolder.instance().initialize(this.password.getValue());
             } else {

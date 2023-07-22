@@ -19,3 +19,4 @@ testEntries.json
 .vscode/
 logs/
 test.db
+.DS_store
